@@ -1,5 +1,3 @@
-import math
-
 with open('input.txt', newline='') as csvfile:  
 
     content = csvfile.readlines()
@@ -11,7 +9,7 @@ with open('input.txt', newline='') as csvfile:
             for characterLoopCounter, character in enumerate(list(row[:-1])):
                 if (characterLoopCounter - 1) % 4 == 0:
                     if character != " ":
-                        listOfStacks[math.floor(characterLoopCounter / 4)].append(character)
+                        listOfStacks[characterLoopCounter // 4].append(character)
 
         elif(rowCounter > 9):
 
