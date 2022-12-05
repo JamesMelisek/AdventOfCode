@@ -8,14 +8,11 @@ with open('input.txt', newline='') as csvfile:
     for rowCounter, row in enumerate(content):
         
         if (rowCounter <= 7):
-
             for characterLoopCounter, character in enumerate(list(row[:-1])):
-
                 if (characterLoopCounter - 1) % 4 == 0:
-                    
                     if character != " ":
                         listOfStacks[math.floor(characterLoopCounter / 4)].append(character)
-        
+
         elif(rowCounter > 9):
 
             instructions = row[:-1].split(' ')
@@ -24,7 +21,7 @@ with open('input.txt', newline='') as csvfile:
             moveFrom = int(instructions[3])
             moveTo = int(instructions[5])
 
-            for i in range(moveAmount):
-                listOfStacks[moveTo - 1].insert(0, listOfStacks[moveFrom - 1].pop(0))
+            listOfStacks[moveTo - 1] = listOfStacks[moveFrom - 1][0:moveAmount] + listOfStacks[moveTo - 1]
+            del listOfStacks[moveFrom - 1][:moveAmount]
 
 print([item[0] for item in listOfStacks])
