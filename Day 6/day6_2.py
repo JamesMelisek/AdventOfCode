@@ -10,12 +10,9 @@ with open('input.txt', newline='') as csvfile:
 
             latestFour.append(character)
 
-            if counter > 4:
+            if counter > 14:
                 latestFour.pop(0)
 
-
-            print(f'Counter #: {counter} , latest 4: {latestFour}')
-
-            if (not any(latestFour.count(x) > 1 for x in latestFour) and counter > 4):
-                print(f'Hit one of the bit things at {counter}!')
+            if (not any(latestFour.count(x) > 1 for x in latestFour) and counter > 14):                
+                print(f'Hit one of the message things at {counter}!')
                 break
