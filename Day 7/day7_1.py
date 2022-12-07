@@ -21,25 +21,36 @@ class Directory:
 
 def printSavedDirectories(list):
     print('List of all stored directories:')
-    for dirs in list:
+    for dirs in list.children:
         print(f'{dirs.name}')
     print()
 
 
 
-def printFS(listOfDirs):
+def printFS(direct):
     print('Total system:')
 
-    for dirs in listOfDirs:
+    for child in direct.children:
+       
+        if child is File:
+            print(child.name)
+        else:
+            print(child.name)
+        #else:
+            printFS(child)
 
-        print (f'{dirs.name},   {type(dirs)}, Parent:{dirs.parentDirectory.name}')
 
-        for kid in dirs.children:
-            print (f'----------{kid.name},   {type(kid)}')
+def getChildIndex(currentDirectory, targetDirectoryName):
 
-        print()
+    for idx, kid in enumerate(currentDirectory.children):
 
-    print()
+        if kid.name == targetDirectoryName:
+
+            print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Found child in parent: {kid}')
+            return idx
+
+    print(f'-------------------get child index using name---------- Did not find: {targetDirectoryName} in parent {currentDirectory.name}')
+    return 10000000000000
 
 
 
@@ -54,19 +65,16 @@ def findDirectoryInListWithChild(directories, nameToFind, childWithin):
             return dir
 
     print(f'------------------has children---------------- Did not find: {dir.name} with child {childWithin.name}')
-
 def findDirectoryInListWithParent(directories, nameToFind, pDirectory):
     
     for dir in directories:
 
-        if dir.name == nameToFind and dir.parentDirectory == pDirectory:
+        if dir.name == nameToFind and dir.parentDirectory.name == pDirectory:
 
             print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Found directory in list: {dir}')
             return dir
 
     print(f'-----------------has parent------------------ Did not find: {nameToFind} with parent {pDirectory.name}')
-
-
 def getChildFromDirectory(parent, nameToFind):
 
     for kid in parent.children:
@@ -79,16 +87,17 @@ def getChildFromDirectory(parent, nameToFind):
     print(f'-------------------pull child from direct------------- Did not find: {nameToFind} in parent {parent.name}')
 
 
+ultimateParentDirectory = 0
+
 with open('input.txt', newline='') as csvfile:  
 
     content = csvfile.read().splitlines() 
 
-    nullParentDirectory = Directory("NULL",[])
-    currentDirectory = nullParentDirectory
+    nullParentDirectory = Directory("NULL", [])
+    nullParentDirectory.children.append(Directory('/',nullParentDirectory))
 
-    listOfDirectories = []
-    listOfDirectories.append(Directory("/", nullParentDirectory))
-    printSavedDirectories(listOfDirectories)
+    ultimateParentDirectory = nullParentDirectory
+    currentDirectory = nullParentDirectory
     
 
     for row in content:  
@@ -101,18 +110,26 @@ with open('input.txt', newline='') as csvfile:
         elif (row[0:4] == "$ cd"):
             print(f'CD : ' + row)
             
-            if(row[5:7] == ".."):
+            if(row[5:7] == ".."): # CD ..
+
                 print(f'MOVE TO PARENT: {row}')
                 print(f'New directory: {currentDirectory.name}')
+
                 currentDirectory = currentDirectory.parentDirectory
-            else:
-                print(f"MOVE TO DIR: {row.split(' ')[2]}")
 
-                printSavedDirectories(listOfDirectories)
+            else: # CD NAME
+
+                targetDirectoryName = row.split(' ')[2]
+                print(f"MOVE TO DIR: {targetDirectoryName}")
+
+                #printSavedDirectories(listOfDirectories)
                 print(currentDirectory.name)
-                currentDirectory = getChildFromDirectory(currentDirectory, row.split(' ')[2])
+                print(len(currentDirectory.children))
 
-                print(f'New directory: {currentDirectory.name}')
+                printSavedDirectories(currentDirectory)
+                currentDirectory = currentDirectory.children[getChildIndex(currentDirectory, targetDirectoryName)] # Get the child that is in dere already
+
+                print(f'Moved into new directory: {currentDirectory.name}')
                 print("SUCESS IN MOVING TO DIRECTORY")
 
             print()
@@ -120,25 +137,28 @@ with open('input.txt', newline='') as csvfile:
         elif (row[0:3] == "dir"):
             print(f'DIR : ' + row)
 
-            
-            #check if it already exists before creating new
-            if (findDirectoryInListWithParent(listOfDirectories, row.split(' ')[1], currentDirectory) == None):
+            listedDirectoryName = row.split(' ')[1]
+
+            #check if it already exists in directory
+            if (currentDirectory.children):
 
                 newDir = Directory(row.split(' ')[1], currentDirectory)
                 print(f'>>>Dir name:{newDir.name}, parent Directory:{newDir.parentDirectory.name}')
-                listOfDirectories.append(newDir)
-                findDirectoryInListWithParent(listOfDirectories, currentDirectory.name, currentDirectory.parentDirectory).addChildren(newDir)
+
+                currentDirectory.addChildren(newDir)
+
+                #findDirectoryInListWithParent(listOfDirectories, currentDirectory.name, currentDirectory.parentDirectory).addChildren(newDir)
     
         else:
             print(f'FILE: ' + row)
+
             newFile = File(row.split(' ')[1], row.split(' ')[0], currentDirectory)
             print(f'>>>File name:{newFile.name}, fileSize:{newFile.fileSize}, parentDirect:{newFile.parentDirectory.name}')
 
-            findDirectoryInListWithParent(listOfDirectories, currentDirectory.name, currentDirectory.parentDirectory).addChildren(newFile)
+            currentDirectory.addChildren(newFile)
 
 
-
-        printFS(listOfDirectories)
-        #input()
+        printFS(currentDirectory)
+        input()
     
-    printFS(listOfDirectories)
+   # printFS(listOfDirectories)
