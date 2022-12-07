@@ -54,37 +54,14 @@ def getChildIndex(currentDirectory, targetDirectoryName):
 
 
 
+def parentAlreadyHasChild(parentDir, nameToCheck):
 
-def findDirectoryInListWithChild(directories, nameToFind, childWithin):
-    
-    for dir in directories:
+    for child in parentDir.children:
+        
+        if (child.name == nameToCheck):
+            return True
 
-        if dir.name == nameToFind and childWithin in dir.children:
-
-            print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Found directory in list: {dir}')
-            return dir
-
-    print(f'------------------has children---------------- Did not find: {dir.name} with child {childWithin.name}')
-def findDirectoryInListWithParent(directories, nameToFind, pDirectory):
-    
-    for dir in directories:
-
-        if dir.name == nameToFind and dir.parentDirectory.name == pDirectory:
-
-            print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Found directory in list: {dir}')
-            return dir
-
-    print(f'-----------------has parent------------------ Did not find: {nameToFind} with parent {pDirectory.name}')
-def getChildFromDirectory(parent, nameToFind):
-
-    for kid in parent.children:
-
-        if kid.name == nameToFind:
-
-            print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Found child in parent: {kid}')
-            return kid
-
-    print(f'-------------------pull child from direct------------- Did not find: {nameToFind} in parent {parent.name}')
+    return False
 
 
 ultimateParentDirectory = 0
@@ -125,8 +102,9 @@ with open('input.txt', newline='') as csvfile:
                 #printSavedDirectories(listOfDirectories)
                 print(currentDirectory.name)
                 print(len(currentDirectory.children))
-
                 printSavedDirectories(currentDirectory)
+
+                #printSavedDirectories(currentDirectory)
                 currentDirectory = currentDirectory.children[getChildIndex(currentDirectory, targetDirectoryName)] # Get the child that is in dere already
 
                 print(f'Moved into new directory: {currentDirectory.name}')
@@ -140,7 +118,7 @@ with open('input.txt', newline='') as csvfile:
             listedDirectoryName = row.split(' ')[1]
 
             #check if it already exists in directory
-            if (currentDirectory.children):
+            if (not parentAlreadyHasChild(currentDirectory, listedDirectoryName)):
 
                 newDir = Directory(row.split(' ')[1], currentDirectory)
                 print(f'>>>Dir name:{newDir.name}, parent Directory:{newDir.parentDirectory.name}')
@@ -148,6 +126,8 @@ with open('input.txt', newline='') as csvfile:
                 currentDirectory.addChildren(newDir)
 
                 #findDirectoryInListWithParent(listOfDirectories, currentDirectory.name, currentDirectory.parentDirectory).addChildren(newDir)
+            else:
+                print("already created in directory????")
     
         else:
             print(f'FILE: ' + row)
@@ -158,7 +138,7 @@ with open('input.txt', newline='') as csvfile:
             currentDirectory.addChildren(newFile)
 
 
-        printFS(currentDirectory)
-        input()
+        #printFS(currentDirectory)
+        #input()
     
    # printFS(listOfDirectories)
