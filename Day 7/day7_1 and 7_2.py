@@ -19,25 +19,38 @@ class Directory:
         self.children.append(child)
 
 
-def printSavedDirectories(list):
-    print('List of all stored directories:')
-    for dirs in list.children:
-        print(f'{dirs.name}')
-    print()
-
-
-
 def printFS(direct):
-    print('Total system:')
+    print(f'Everything below: {direct.name}')
 
     for child in direct.children:
        
-        if child is File:
+        if type(child) is File:
             print(child.name)
-        else:
+        elif type(child) is Directory:
             print(child.name)
-        #else:
             printFS(child)
+        else:
+            print("IDK SOMETHING ELSE TYPE")
+
+
+def calculateFS(direct):
+
+    totalSize = 0
+
+    for child in direct.children:
+       
+        if type(child) is File:           
+            totalSize += int(child.fileSize)
+
+        elif type(child) is Directory:
+            totalSize += int(calculateFS(child))
+
+    #if (totalSize < 100000):
+    if (totalSize >= 30000000 - (70000000 - 49192532)):
+            #print(f'Total Size for {direct.name} = {totalSize}')
+            print(totalSize)    
+
+    return totalSize
 
 
 def getChildIndex(currentDirectory, targetDirectoryName):
@@ -53,7 +66,6 @@ def getChildIndex(currentDirectory, targetDirectoryName):
     return 10000000000000
 
 
-
 def parentAlreadyHasChild(parentDir, nameToCheck):
 
     for child in parentDir.children:
@@ -64,7 +76,6 @@ def parentAlreadyHasChild(parentDir, nameToCheck):
     return False
 
 
-ultimateParentDirectory = 0
 
 with open('input.txt', newline='') as csvfile:  
 
@@ -73,16 +84,12 @@ with open('input.txt', newline='') as csvfile:
     nullParentDirectory = Directory("NULL", [])
     nullParentDirectory.children.append(Directory('/',nullParentDirectory))
 
-    ultimateParentDirectory = nullParentDirectory
     currentDirectory = nullParentDirectory
     
-
     for row in content:  
 
         if (row[0:4] == "$ ls"):
-            print(f'LS  : ' + row + '\n')
-
-
+            pass
 
         elif (row[0:4] == "$ cd"):
             print(f'CD : ' + row)
@@ -90,7 +97,7 @@ with open('input.txt', newline='') as csvfile:
             if(row[5:7] == ".."): # CD ..
 
                 print(f'MOVE TO PARENT: {row}')
-                print(f'New directory: {currentDirectory.name}')
+                print(f'New directory: {currentDirectory.parentDirectory.name}')
 
                 currentDirectory = currentDirectory.parentDirectory
 
@@ -98,14 +105,7 @@ with open('input.txt', newline='') as csvfile:
 
                 targetDirectoryName = row.split(' ')[2]
                 print(f"MOVE TO DIR: {targetDirectoryName}")
-
-                #printSavedDirectories(listOfDirectories)
-                print(currentDirectory.name)
-                print(len(currentDirectory.children))
-                printSavedDirectories(currentDirectory)
-
-                #printSavedDirectories(currentDirectory)
-                currentDirectory = currentDirectory.children[getChildIndex(currentDirectory, targetDirectoryName)] # Get the child that is in dere already
+                currentDirectory = currentDirectory.children[getChildIndex(currentDirectory, targetDirectoryName)]
 
                 print(f'Moved into new directory: {currentDirectory.name}')
                 print("SUCESS IN MOVING TO DIRECTORY")
@@ -125,7 +125,6 @@ with open('input.txt', newline='') as csvfile:
 
                 currentDirectory.addChildren(newDir)
 
-                #findDirectoryInListWithParent(listOfDirectories, currentDirectory.name, currentDirectory.parentDirectory).addChildren(newDir)
             else:
                 print("already created in directory????")
     
@@ -137,8 +136,6 @@ with open('input.txt', newline='') as csvfile:
 
             currentDirectory.addChildren(newFile)
 
-
-        #printFS(currentDirectory)
         #input()
-    
-   # printFS(listOfDirectories)
+
+    calculateFS(nullParentDirectory)
