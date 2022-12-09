@@ -1,3 +1,7 @@
+class RopeSegment:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
 #This shouldve just been C++ lol
 
@@ -5,48 +9,53 @@ with open('input.txt', newline='') as csvfile:
 
     content = csvfile.read().splitlines()
 
-    Matrix = [[0 for x in range(99)] for y in range(99)] 
-    scenicScoreMatrix = [[0 for x in range(99)] for y in range(99)] 
+    head = RopeSegment(0,0)
+    tail = RopeSegment(0,0)
 
-    for heightCounter, row in enumerate(content):
-        for widthCounter, character in enumerate(list(row)):
-            Matrix[heightCounter][widthCounter] = int(character)
+    print(f'current head location: ({head.x},{head.y})')
+    print(f'current tail location: ({tail.x},{tail.y})')
 
-    for rowIdx, row in enumerate(Matrix):
-        for colIdx, column in enumerate(row):
+    for row in content:
+        
+        direction = row.split(' ')[0]
+        distance = int(row.split(' ')[1])
+        print(f'Travel {distance} in {direction} direction')
 
-            visibleNorth = 0
-            visibleSouth = 0
-            visibleEast = 0
-            visibleWest = 0
+        for distanceStepCounter in range(distance, 0, -1):
+            
+            #Take steps for the HEAD
+            if direction == 'U':
+                head.y += 1
+            elif direction == 'D':
+                head.y -= 1
+            elif direction == 'R':
+                head.x += 1
+            elif direction == 'L':
+                head.x -= 1
 
-            for i in range(rowIdx, 0, -1):        
-                visibleNorth += 1           
-                if (Matrix[i-1][colIdx] >= Matrix[rowIdx][colIdx]):
-                    break
+            #Check where to go for the TAIL
 
-            for i in range(rowIdx, 98, 1):
-                visibleSouth += 1
-                if (Matrix[i+1][colIdx] >= Matrix[rowIdx][colIdx]):
-                    break
+            if(abs(head.y - tail.y) == 1 and abs(head.x - tail.x) == 1):
+                print("Diagonal case!!!")
 
-            for i in range(colIdx, 0, -1):
-                visibleWest += 1            
-                if (Matrix[rowIdx][i-1] >= Matrix[rowIdx][colIdx]):
-                    break
+                
 
-            for i in range(colIdx, 98, 1):
-                visibleEast += 1            
-                if (Matrix[rowIdx][i+1] >= Matrix[rowIdx][colIdx]):
-                    break
 
-            scenicScoreMatrix[rowIdx][colIdx] = visibleNorth * visibleSouth * visibleWest * visibleEast
 
-    largestScore = 0
+                input()
 
-    for rowIdx, row in enumerate(scenicScoreMatrix):
-        for colIdx, col in enumerate(row):
-            if scenicScoreMatrix[rowIdx][colIdx] > largestScore:
-                largestScore = scenicScoreMatrix[rowIdx][colIdx]
+            else:
+                if(head.y - tail.y > 1):
+                    tail.y += 1
+                if(tail.y - head.y > 1):
+                    tail.y -= 1
+                if(head.x - tail.x > 1):
+                    tail.x += 1
+                if(tail.x - head.x > 1):
+                    tail.x -= 1
 
-    print(f'The largest scenic score of any tree is {largestScore}')
+            print(f'current head location: ({head.x},{head.y})')
+            print(f'current tail location: ({tail.x},{tail.y})')
+            print()
+            #input()
+
