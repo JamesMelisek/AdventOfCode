@@ -12,14 +12,16 @@ with open('input.txt', newline='') as csvfile:
     head = RopeSegment(0,0)
     tail = RopeSegment(0,0)
 
-    print(f'current head location: ({head.x},{head.y})')
-    print(f'current tail location: ({tail.x},{tail.y})')
+    listOfAllTailCoordinates = []
+
+    #print(f'current head location: ({head.x},{head.y})')
+    #print(f'current tail location: ({tail.x},{tail.y})')
 
     for row in content:
         
         direction = row.split(' ')[0]
         distance = int(row.split(' ')[1])
-        print(f'Travel {distance} in {direction} direction')
+        #print(f'Travel {distance} in {direction} direction')
 
         for distanceStepCounter in range(distance, 0, -1):
             
@@ -33,17 +35,35 @@ with open('input.txt', newline='') as csvfile:
             elif direction == 'L':
                 head.x -= 1
 
-            #Check where to go for the TAIL
+            #Oh my gosh isaac dont look at this
 
             if(abs(head.y - tail.y) == 1 and abs(head.x - tail.x) == 1):
-                print("Diagonal case!!!")
-
-                
-
-
-
-                input()
-
+                pass
+                #print("Diagonal case, but chill")
+            elif(head.y - tail.y == 2 and head.x - tail.x == -1):
+                tail.y += 1
+                tail.x -= 1
+            elif(head.y - tail.y == 2 and head.x - tail.x == 1):
+                tail.y += 1
+                tail.x += 1
+            elif(head.y - tail.y == -2 and head.x - tail.x == -1):
+                tail.y -= 1
+                tail.x -= 1
+            elif(head.y - tail.y == -2 and head.x - tail.x == 1):
+                tail.y -= 1
+                tail.x += 1
+            elif(head.y - tail.y == -1 and head.x - tail.x == 2):
+                tail.y -= 1
+                tail.x += 1
+            elif(head.y - tail.y == 1 and head.x - tail.x == 2):
+                tail.y += 1
+                tail.x += 1
+            elif(head.y - tail.y == -1 and head.x - tail.x == -2):
+                tail.y -= 1
+                tail.x -= 1
+            elif(head.y - tail.y == 1 and head.x - tail.x == -2):
+                tail.y += 1
+                tail.x -= 1
             else:
                 if(head.y - tail.y > 1):
                     tail.y += 1
@@ -54,8 +74,12 @@ with open('input.txt', newline='') as csvfile:
                 if(tail.x - head.x > 1):
                     tail.x -= 1
 
-            print(f'current head location: ({head.x},{head.y})')
-            print(f'current tail location: ({tail.x},{tail.y})')
-            print()
-            #input()
+            #print(f'current head location: ({head.x},{head.y})')
+            #print(f'current tail location: ({tail.x},{tail.y})')
+
+
+            if ([tail.x, tail.y] not in listOfAllTailCoordinates):
+                listOfAllTailCoordinates.append([tail.x, tail.y])
+
+    print(f'Total number of tail spots is {len(listOfAllTailCoordinates)}')
 
