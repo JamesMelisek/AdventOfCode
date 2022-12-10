@@ -1,6 +1,6 @@
 def displayScreen(bigList):
-    for i in range(0, 5, 1):
-        for character in list(displayMatrix[i * 39 : 39 + (i * 39) ]):
+    for i in range(0, 6, 1):
+        for character in list(displayMatrix[i * 40 : 40 + (i * 40) ]):
             print(character,end='')
         print()
 
@@ -12,9 +12,11 @@ with open('input.txt', newline='') as csvfile:
 
     registerX = 1
     cycleCounter = 0
-    signalStrengthSum = 0
+
+    spriteLocation = [0, 1 ,2]
 
     displayMatrix = ['.' for x in range(6 * 40)] 
+
     displayScreen(displayMatrix)
 
 
@@ -22,36 +24,41 @@ with open('input.txt', newline='') as csvfile:
         
         if (row[0:4] == "noop"):     
             
-            #print('NOOP COMMEND:' + row)
-            cycleCounter += 1
+            if(cycleCounter % 40 == spriteLocation[0] or cycleCounter % 40 == spriteLocation[1] or cycleCounter % 40 == spriteLocation[2]):
+                displayMatrix[cycleCounter] = '#'
 
-            if(cycleCounter == 20 or cycleCounter == 60 or cycleCounter == 100 or cycleCounter == 140 or cycleCounter == 180 or cycleCounter == 220):
-                print(f'CALCULATING {cycleCounter * registerX}')
-                signalStrengthSum += (cycleCounter * registerX)
+            #step to next
+            cycleCounter += 1
 
 
         elif (row[0:4] == "addx"):
             
             increment = int(row.split(' ')[1])
 
-            cycleCounter += 1
-
-            if(cycleCounter == 20 or cycleCounter == 60 or cycleCounter == 100 or cycleCounter == 140 or cycleCounter == 180 or cycleCounter == 220):
-                print(f'CALCULATING {cycleCounter * registerX}')
-                signalStrengthSum += (cycleCounter * registerX)
+            if(cycleCounter % 40 == spriteLocation[0] or cycleCounter % 40 == spriteLocation[1] or cycleCounter % 40 == spriteLocation[2]):
+                displayMatrix[cycleCounter] = '#'
 
             cycleCounter += 1
+      
 
-            if(cycleCounter == 20 or cycleCounter == 60 or cycleCounter == 100 or cycleCounter == 140 or cycleCounter == 180 or cycleCounter == 220):
-                print(f'CALCULATING {cycleCounter * registerX}')
-                signalStrengthSum += (cycleCounter * registerX)
+            if(cycleCounter % 40 == spriteLocation[0] or cycleCounter % 40 == spriteLocation[1] or cycleCounter % 40 == spriteLocation[2]):
+                displayMatrix[cycleCounter] = '#'
 
             registerX += increment
+            spriteLocation[0] = registerX - 1
+            spriteLocation[1] = registerX
+            spriteLocation[2] = registerX + 1
 
-            print(f'ADDX COMMEND: {increment} , {row}')
+            cycleCounter += 1
 
-        #print(f'after cycleCounter = {cycleCounter}, registerX = {registerX}')
+        #print()
+        #print(f'after cycleCounter = {cycleCounter}, spriteLocation = {spriteLocation}, regsiterx = {registerX}, last increment = {increment}')
+        #displayScreen(displayMatrix)
+        #print(displayMatrix)
         #input()
 
 
-    print(f'The answer is {signalStrengthSum}')
+    displayScreen(displayMatrix)
+
+
+    #print(f'The answer is {signalStrengthSum}')
