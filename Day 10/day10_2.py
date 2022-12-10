@@ -1,8 +1,8 @@
-class valueToChange:
-
-    def __init__(self, increment, cycleToUpdate):
-        self.increment = increment
-        self.cycles = cycleToUpdate
+def displayScreen(bigList):
+    for i in range(0, 5, 1):
+        for character in list(displayMatrix[i * 39 : 39 + (i * 39) ]):
+            print(character,end='')
+        print()
 
 
 with open('input.txt', newline='') as csvfile:  
@@ -13,6 +13,10 @@ with open('input.txt', newline='') as csvfile:
     registerX = 1
     cycleCounter = 0
     signalStrengthSum = 0
+
+    displayMatrix = ['.' for x in range(6 * 40)] 
+    displayScreen(displayMatrix)
+
 
     for row in content:
         
