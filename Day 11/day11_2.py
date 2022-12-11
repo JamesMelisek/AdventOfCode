@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 class Monkey:
 
     def __init__(self, monkeyID, heldItems, monkeyTest, monkeyOperation, ifTruePass, ifFalsePass, inspectCount):
@@ -22,7 +24,7 @@ class Monkey:
         print(self.ifFalsePass)
 
 
-with open('input.txt', newline='') as csvfile:  
+with open('test.txt', newline='') as csvfile:  
 
     content = csvfile.read().splitlines()
 
@@ -70,20 +72,20 @@ with open('input.txt', newline='') as csvfile:
     print(f'Number of monkeys = {len(listOfMonkeys)}')
     input()
 
-    for round in range(1, 21, 1):
+    for round in tqdm(range(1, 10001, 1)):
 
-        print(f'\n~~ ROUND {round} ~~')
+        #print(f'~~ ROUND {round} ~~')
 
         for monkee in listOfMonkeys:
 
-            print(f"MONKEY {monkee.monkeyID}")
+            #print(f"MONKEY {monkee.monkeyID}")
 
             for item in monkee.heldItems:
 
                 monkee.inspectCount += 1
 
                 if (monkee.monkeyOperation.split(' ')[-2] == '*' and monkee.monkeyOperation.split(' ')[-1] == 'old'):
-                    print("hit the exponent monkey!")
+                    #print("hit the exponent monkey!")
                     item = item * item
 
                 elif (monkee.monkeyOperation.split(' ')[-2] == '*'):
@@ -93,23 +95,24 @@ with open('input.txt', newline='') as csvfile:
                     item = item + int(monkee.monkeyOperation.split(' ')[-1])
 
 
-                item = item // 3
-                print(item)
+                #item = item // 3
+                #print(item)
 
                 if (item % int(monkee.monkeyTest.split(' ')[-1]) == 0):
-                    print("Divisable!!!")
-                    print(f'Throw to {monkee.ifTruePass}')
+                    #print("Divisable!!!")
+                    #print(f'Throw to {monkee.ifTruePass}')
                     listOfMonkeys[monkee.ifTruePass].heldItems.append(item)
 
                 elif (item % int(monkee.monkeyTest.split(' ')[-1]) != 0):
-                    print("Not Divisable!!!")
-                    print(f'Throw to {monkee.ifFalsePass}')
+                    #print("Not Divisable!!!")
+                    #print(f'Throw to {monkee.ifFalsePass}')
                     listOfMonkeys[monkee.ifFalsePass].heldItems.append(item)
 
             monkee.heldItems = []
-            
+    
         for monkee in listOfMonkeys:
-            print(f'Monkey {monkee.monkeyID}: {monkee.heldItems}')
+            #print(f'Monkey {monkee.monkeyID}: {monkee.heldItems}')
+            pass
 
     for monkee in listOfMonkeys:
         print(f'Monkey {monkee.monkeyID} inspected items {monkee.inspectCount} times.')  
